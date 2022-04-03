@@ -1,0 +1,49 @@
+basePath: /api/v1
+info:
+  contact: {}
+  description: 校友招聘系统接口文档
+  title: 校友招聘系统
+  version: 1.0.0
+paths:
+  /icons:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: path
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 图标下载
+      tags:
+      - 图标
+    post:
+      consumes:
+      - '*/*'
+      parameters:
+      - description: 图标
+        in: formData
+        name: icon
+        required: true
+        type: file
+      produces:
+      - '*/*'
+      responses:
+        "200":
+          description: ""
+      summary: 图标上传
+      tags:
+      - 图标
+schemes:
+- http
+securityDefinitions:
+  AuthToken:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,0 +1,6 @@
+/.idea/
+/.vscode/
+/var/
+/bin/
+*_test.go
+/config.yaml

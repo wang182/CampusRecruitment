@@ -1,0 +1,8 @@
+listen: "0.0.0.0:8080"
+secretKey: ""
+mysql:
+  host: localhost
+  port: 3306
+  db: db_name
+  username: root
+  password: 

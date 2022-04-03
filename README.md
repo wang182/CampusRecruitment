@@ -1,4 +1,4 @@
-GOWF DEMO
+GIN Web Demo
 ===================
 go web 开发框架演示
 

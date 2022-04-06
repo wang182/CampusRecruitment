@@ -1,10 +1,412 @@
 basePath: /api/v1
+definitions:
+  models.Comp:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      compName:
+        type: string
+      compType:
+        type: string
+      id:
+        type: string
+      introduction:
+        type: string
+      logo:
+        type: string
+      peopleNum:
+        type: string
+      state:
+        type: string
+      url:
+        type: string
+    type: object
+  models.User:
+    properties:
+      email:
+        type: string
+      from:
+        type: string
+      headImg:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      position:
+        type: string
+      role:
+        type: string
+      sex:
+        type: string
+    type: object
+  resps.CompCondResp:
+    properties:
+      compImg:
+        type: string
+      compName:
+        type: string
+      compType:
+        type: string
+      peopleNum:
+        type: string
+    type: object
+  resps.PassUpdateResp:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      role:
+        type: string
+    type: object
+  resps.UserLoginResp:
+    properties:
+      token:
+        type: string
+    type: object
+  types.APIPageResult:
+    properties:
+      list: {}
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
+    type: object
+  types.APIResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      messageDetail:
+        type: string
+      result: {}
+    type: object
+  types.CompRegisterForm:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      compName:
+        type: string
+      compType:
+        type: string
+      introduction:
+        type: string
+      logo:
+        type: string
+      peopleNum:
+        type: string
+      url:
+        type: string
+    required:
+    - address
+    - city
+    - compName
+    - compType
+    - introduction
+    - logo
+    - peopleNum
+    type: object
+  types.NormalUpdateUserForm:
+    properties:
+      from:
+        type: string
+      headImg:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      position:
+        type: string
+      sex:
+        type: string
+    type: object
+  types.UpdateCompForm:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      compName:
+        type: string
+      compType:
+        type: string
+      introduction:
+        type: string
+      logo:
+        type: string
+      peopleNum:
+        type: string
+      state:
+        type: string
+      url:
+        type: string
+    type: object
+  types.UpdateUserForm:
+    properties:
+      from:
+        type: string
+      headImg:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      position:
+        type: string
+      role:
+        type: string
+      sex:
+        type: string
+    type: object
+  types.UpdateUserPassword:
+    properties:
+      newPass:
+        type: string
+      oldPass:
+        type: string
+    required:
+    - newPass
+    - oldPass
+    type: object
+  types.UserLoginForm:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  types.UserRegisterForm:
+    properties:
+      email:
+        type: string
+      from:
+        type: string
+      headImg:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      position:
+        type: string
+      role:
+        type: string
+      sex:
+        type: string
+    required:
+    - email
+    - from
+    - name
+    - password
+    - phone
+    - role
+    - sex
+    type: object
 info:
   contact: {}
-  description: 校友招聘系统接口文档
-  title: 校友招聘系统
+  description: 校园招聘系统接口文档
+  title: 校园招聘系统
   version: 1.0.0
 paths:
+  /comp:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.APIResponse'
+            - properties:
+                result:
+                  allOf:
+                  - $ref: '#/definitions/types.APIPageResult'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/resps.CompCondResp'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - AuthToken: []
+      summary: 查询所有公司
+      tags:
+      - Comp
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: parameter
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/types.CompRegisterForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.APIResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/models.Comp'
+              type: object
+      summary: 公司注册
+      tags:
+      - Comp
+  /comp/{compId}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: comp id
+        in: path
+        name: compId
+        required: true
+        type: string
+      - description: parameter
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateCompForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.APIResponse'
+      security:
+      - AuthToken: []
+      summary: 更新公司信息
+      tags:
+      - Comp
+  /comp/{compId}/close:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: comp id
+        in: path
+        name: compId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.APIResponse'
+      security:
+      - AuthToken: []
+      summary: 关闭公司
+      tags:
+      - Comp
+  /comp/{id}/approve:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: comp id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.APIResponse'
+      security:
+      - AuthToken: []
+      summary: 更新公司状态
+      tags:
+      - Comp
+  /comp/cond:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: compType
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: peopleNum
+        type: string
+      - in: query
+        name: place
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.APIResponse'
+            - properties:
+                result:
+                  allOf:
+                  - $ref: '#/definitions/types.APIPageResult'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/resps.CompCondResp'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - AuthToken: []
+      summary: 条件筛选公司
+      tags:
+      - Comp
   /icons:
     get:
       consumes:
@@ -39,6 +441,222 @@ paths:
       summary: 图标上传
       tags:
       - 图标
+  /users:
+    get:
+      consumes:
+      - application/x-www-form-urlencoded
+      - ' application/json'
+      parameters:
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: pageSize
+        type: integer
+      - description: 查询关键字
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.APIResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/types.APIPageResult'
+              type: object
+      security:
+      - AuthToken: []
+      summary: 查询用户列表
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: parameter
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/types.NormalUpdateUserForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.APIResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/models.User'
+              type: object
+      security:
+      - AuthToken: []
+      summary: 用户修改
+      tags:
+      - Users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.APIResponse'
+      security:
+      - AuthToken: []
+      summary: 用户删除
+      tags:
+      - Users
+  /users/adminUpdate/{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: parameter
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateUserForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.APIResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/models.User'
+              type: object
+      security:
+      - AuthToken: []
+      summary: 管理员修改用户
+      tags:
+      - Users
+  /users/auth:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.APIResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/models.User'
+              type: object
+      security:
+      - AuthToken: []
+      summary: 获取登录信息
+      tags:
+      - Users
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: parameter
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/types.UserLoginForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.APIResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/resps.UserLoginResp'
+              type: object
+      summary: 用户登录
+      tags:
+      - Users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: parameter
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/types.UserRegisterForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.APIResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/models.User'
+              type: object
+      summary: 用户注册
+      tags:
+      - Users
+  /users/updatePass:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: parameter
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateUserPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.APIResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/resps.PassUpdateResp'
+              type: object
+      security:
+      - AuthToken: []
+      summary: 普通用户修改密码
+      tags:
+      - Users
 schemes:
 - http
 securityDefinitions:

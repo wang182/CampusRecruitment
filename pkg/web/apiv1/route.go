@@ -7,9 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @title 校友招聘系统
+// @title 校园招聘系统
 // @version 1.0.0
-// @description 校友招聘系统接口文档
+// @description 校园招聘系统接口文档
 
 // @BasePath /api/v1
 // @schemes http
@@ -31,6 +31,24 @@ func Register(g *gin.RouterGroup) {
 	}
 	// add before apis which need jwt auth
 	g.Use(middleware.JwtAuth())
-	g.GET("/users", handler.SearchUser)
-	// g.GET("/users/:id", handler.GetUser)
+	{
+		//用户相关api
+		g.GET("/users/auth", handler.AuthMe)
+		g.PUT("/users", handler.NormalUserUpdate)
+		g.DELETE("/users/:id", handler.UserDelete)
+		g.PUT("/users/updatePass", handler.UpdatePassword)
+		g.GET("/users", handler.SearchUser)
+		g.PUT("/users/adminUpdate/:id", handler.UserUpdate)
+
+		g.POST("/comp", handler.CompRegister)
+		g.GET("/comp/cond", handler.QueryCompWithCond)
+		g.GET("/comp", handler.QueryComp)
+		g.PUT("/comp/:id/close", handler.CloseComp)
+		g.PUT("comp/:id/approve", handler.ApproveComp)
+		g.PUT("/comp/:id", handler.UpdateComp)
+
+		g.POST("/job", handler.CreateJob)
+
+	}
+
 }

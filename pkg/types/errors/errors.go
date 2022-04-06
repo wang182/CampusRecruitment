@@ -23,6 +23,7 @@ var (
 
 	// 权限错误
 	ErrPermDeny = newErrorCode("permission denied", 110100)
+	ErrRole     = newErrorCode("user role error", 110210)
 
 	// 文件系统错误
 	ErrFileNotExists        = newErrorCode("file not exists", 120100)
@@ -37,7 +38,9 @@ var (
 	ErrInvalidJSON     = newErrorCode("invalid JSON", 200210)
 	ErrInvalidFilename = newErrorCode("invalid filename", 200230)
 	ErrInvalidVersion  = newErrorCode("invalid version", 200240)
+	WarnCompNotExit    = newErrorCode("comp not exit,please register", 200300)
 
 	// db model 错误
 	ErrAlreadyExists = newErrorCode("object already exists", 300100)
+	ErrNotExist      = newErrorCode("object not exist", 300200)
 )

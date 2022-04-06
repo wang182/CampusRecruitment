@@ -99,8 +99,8 @@ func (ctx *Context) User() (user types.UserInfo, err error) {
 		}
 
 		user = types.UserInfo{
-			Id:       claims.UserId,
-			Username: claims.UserName,
+			Id:    claims.UserId,
+			Email: claims.Email,
 		}
 		ctx.set("_userInfo", user)
 		return user, nil

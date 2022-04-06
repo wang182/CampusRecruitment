@@ -4,6 +4,7 @@ import "gorm.io/gorm"
 
 var modelList = []DBModel{
 	&User{},
+	&Comp{},
 }
 
 func migrate(tx *gorm.DB) error {

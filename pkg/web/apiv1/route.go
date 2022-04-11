@@ -23,6 +23,8 @@ func Register(g *gin.RouterGroup) {
 	g.POST("/users/register", handler.UserRegister)
 	// 用户登录
 	g.POST("/users/login", handler.UserLogin)
+	//公司注册
+	g.POST("/comp", handler.CompRegister)
 
 	{
 		//文件上传
@@ -40,15 +42,23 @@ func Register(g *gin.RouterGroup) {
 		g.GET("/users", handler.SearchUser)
 		g.PUT("/users/adminUpdate/:id", handler.UserUpdate)
 
-		g.POST("/comp", handler.CompRegister)
 		g.GET("/comp/cond", handler.QueryCompWithCond)
 		g.GET("/comp", handler.QueryComp)
+		g.GET("/admin/comp", handler.AdminQueryComp)
 		g.PUT("/comp/:id/close", handler.CloseComp)
 		g.PUT("comp/:id/approve", handler.ApproveComp)
 		g.PUT("/comp/:id", handler.UpdateComp)
+		g.GET("/comp/:id", handler.GetCompDetail)
 
 		g.POST("/job", handler.CreateJob)
-
+		g.GET("/jobs", handler.QueryJobs)
+		g.GET("/admin/jobs", handler.AdminQueryJobs)
+		g.GET("jobs/cond", handler.SearchJobsWithCond)
+		g.PUT("/job/:id/close", handler.CloseJob)
+		g.PUT("/job/ids/close", handler.CloseJobsByIds)
+		g.DELETE("/job/:id", handler.DeleteJob)
+		g.GET("/job/:id/details", handler.GetJobDetails)
+		g.PUT("/job/:id", handler.ApproveJob)
 	}
 
 }

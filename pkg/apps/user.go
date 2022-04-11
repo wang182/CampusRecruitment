@@ -12,13 +12,16 @@ import (
 
 func UserRegister(c *ctx.Context, form *types.UserRegisterForm) (interface{}, error) {
 	if form.Role == "comp" {
-		_, err := services.GetCompByName(c.DB(), form.From)
+		comp, err := services.GetCompByName(c.DB(), form.From)
 		if err != nil {
 			if err == errors.ErrNotExist {
 				return nil, errors.WarnCompNotExit
 			} else {
 				return nil, err
 			}
+		}
+		if comp.State == "approve" {
+			return nil, errors.WarnCompNotActive
 		}
 	}
 	user, err := services.CreateUser(c.DB(), form)
@@ -179,4 +182,12 @@ func AdminUserUpdate(c *ctx.Context, form *types.UpdateUserForm) (interface{}, e
 		return nil, err
 	}
 	return userInfo, nil
+}
+
+func CheckLoginUserRole(c *ctx.Context) (string, error) {
+	user, err := services.GetUserById(c.DB(), c.MustUser().Id)
+	if err != nil {
+		return "", errors.AutoDbErr(err)
+	}
+	return user.Role, nil
 }

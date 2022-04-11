@@ -62,9 +62,9 @@ func CloseComp(db *gorm.DB, compId models.Id) error {
 	return nil
 }
 
-func UpdateComp(db *gorm.DB, form *types.UpdateCompForm) (*models.Comp, error) {
-	if err := db.Model(&models.Comp{}).Where("id", form.CompId).Updates(&form).Error; err != nil {
+func UpdateComp(db *gorm.DB, form *models.Comp) (*models.Comp, error) {
+	if err := db.Model(&models.Comp{}).Where("id", form.Id).Updates(&form).Error; err != nil {
 		return nil, errors.AutoDbErr(err)
 	}
-	return GetCompById(db, form.CompId)
+	return nil, nil
 }

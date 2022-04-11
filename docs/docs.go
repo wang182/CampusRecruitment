@@ -16,6 +16,148 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/comp": {
+            "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comp"
+                ],
+                "summary": "查询所有公司",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/types.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/types.APIPageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/resps.CompCondResp"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/jobs": {
+            "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Job"
+                ],
+                "summary": "查询工作（后台管理接口）",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/types.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/types.APIPageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.Job"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/comp": {
             "get": {
                 "security": [
@@ -211,7 +353,89 @@ const docTemplate = `{
                 }
             }
         },
-        "/comp/{compId}": {
+        "/comp/{compId}/close": {
+            "put": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comp"
+                ],
+                "summary": "关闭公司（管理）",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "comp id",
+                        "name": "compId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/comp/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comp"
+                ],
+                "summary": "公司详情界面",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "comp id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/types.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/resps.CompDetailResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
             "put": {
                 "security": [
                     {
@@ -256,42 +480,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/comp/{compId}/close": {
-            "put": {
-                "security": [
-                    {
-                        "AuthToken": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Comp"
-                ],
-                "summary": "关闭公司",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "comp id",
-                        "name": "compId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/types.APIResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/comp/{id}/approve": {
             "put": {
                 "security": [
@@ -308,7 +496,7 @@ const docTemplate = `{
                 "tags": [
                     "Comp"
                 ],
-                "summary": "更新公司状态",
+                "summary": "公司通过审批",
                 "parameters": [
                     {
                         "type": "string",
@@ -377,6 +565,372 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/job": {
+            "post": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Job"
+                ],
+                "summary": "发布职位",
+                "parameters": [
+                    {
+                        "description": "parameter",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.CreateJobForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/types.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/models.Job"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs": {
+            "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Job"
+                ],
+                "summary": "查询职位",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/types.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/types.APIPageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.Job"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/cond": {
+            "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Job"
+                ],
+                "summary": "查询职位",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "city",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "compPeople",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "compType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "工资区间 'unlimited','3k-','3-5k','5-10k','10-15k','15-20k','20k+'",
+                        "name": "wage",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/types.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/types.APIPageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.Job"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Job"
+                ],
+                "summary": "岗位通过申请",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "job id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.APIResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Job"
+                ],
+                "summary": "删除工作",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "job id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/{id}/close": {
+            "put": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Job"
+                ],
+                "summary": "批量关闭职位",
+                "parameters": [
+                    {
+                        "description": "parameter",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.CloseJobsForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/{id}/details": {
+            "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Job"
+                ],
+                "summary": "获取职位详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "job id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "发布公司id",
+                        "name": "compId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "发布者id",
+                        "name": "publishId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.APIResponse"
+                        }
                     }
                 }
             }
@@ -796,6 +1350,50 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Job": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "compId": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "jobName": {
+                    "type": "string"
+                },
+                "jobNum": {
+                    "type": "string"
+                },
+                "maxWage": {
+                    "type": "integer"
+                },
+                "minWage": {
+                    "type": "integer"
+                },
+                "publishId": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "string"
+                },
+                "wageSection": {
+                    "type": "string"
+                }
+            }
+        },
         "models.User": {
             "type": "object",
             "properties": {
@@ -831,17 +1429,92 @@ const docTemplate = `{
         "resps.CompCondResp": {
             "type": "object",
             "properties": {
-                "compImg": {
-                    "type": "string"
-                },
                 "compName": {
                     "type": "string"
                 },
                 "compType": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "string"
+                },
+                "logo": {
+                    "type": "string"
+                },
                 "peopleNum": {
                     "type": "string"
+                }
+            }
+        },
+        "resps.CompDetailResp": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "description": "公司地址",
+                    "type": "string"
+                },
+                "city": {
+                    "description": "所在城市",
+                    "type": "string"
+                },
+                "compName": {
+                    "description": "公司名",
+                    "type": "string"
+                },
+                "compType": {
+                    "description": "公司类型",
+                    "type": "string"
+                },
+                "hotJobs": {
+                    "description": "热门职位",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/resps.HotJobResp"
+                    }
+                },
+                "introduction": {
+                    "description": "公司简介",
+                    "type": "string"
+                },
+                "jobNum": {
+                    "description": "在招岗位数量",
+                    "type": "integer"
+                },
+                "logo": {
+                    "description": "公司logo",
+                    "type": "string"
+                },
+                "peopleNum": {
+                    "description": "公司人数区间",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "公司官网",
+                    "type": "string"
+                },
+                "userNum": {
+                    "description": "招聘者数量",
+                    "type": "integer"
+                }
+            }
+        },
+        "resps.HotJobResp": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "jobName": {
+                    "type": "string"
+                },
+                "jobNum": {
+                    "type": "string"
+                },
+                "maxWage": {
+                    "type": "integer"
+                },
+                "minWage": {
+                    "type": "integer"
                 }
             }
         },
@@ -900,6 +1573,17 @@ const docTemplate = `{
                 "result": {}
             }
         },
+        "types.CloseJobsForm": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "types.CompRegisterForm": {
             "type": "object",
             "required": [
@@ -913,28 +1597,89 @@ const docTemplate = `{
             ],
             "properties": {
                 "address": {
+                    "description": "公司详细地址",
                     "type": "string"
                 },
                 "city": {
+                    "description": "公司所在城市",
                     "type": "string"
                 },
                 "compName": {
+                    "description": "公司名字",
                     "type": "string"
                 },
                 "compType": {
+                    "description": "公司类型 'mall','game','medical','hardware','software','network','finance','video','education','other'",
                     "type": "string"
                 },
                 "introduction": {
+                    "description": "公司简介",
                     "type": "string"
                 },
                 "logo": {
+                    "description": "公司logo",
                     "type": "string"
                 },
                 "peopleNum": {
+                    "description": "公司人数区间 '20','99','500','1000','9999','10000'",
                     "type": "string"
                 },
                 "url": {
+                    "description": "公司官网",
                     "type": "string"
+                }
+            }
+        },
+        "types.CreateJobForm": {
+            "type": "object",
+            "required": [
+                "address",
+                "city",
+                "desc",
+                "jobName",
+                "jobNum",
+                "maxWage",
+                "minWage"
+            ],
+            "properties": {
+                "address": {
+                    "description": "工作地址",
+                    "type": "string"
+                },
+                "city": {
+                    "description": "工作城市",
+                    "type": "string"
+                },
+                "desc": {
+                    "description": "工作描述",
+                    "type": "string"
+                },
+                "jobName": {
+                    "description": "职位名称",
+                    "type": "string"
+                },
+                "jobNum": {
+                    "description": "岗位数量",
+                    "type": "string"
+                },
+                "maxWage": {
+                    "description": "最大薪资",
+                    "type": "integer"
+                },
+                "minWage": {
+                    "description": "最小薪资",
+                    "type": "integer"
+                },
+                "state": {
+                    "description": "工作状态",
+                    "type": "string"
+                },
+                "tags": {
+                    "description": "标签",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

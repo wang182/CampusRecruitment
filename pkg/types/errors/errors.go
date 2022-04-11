@@ -39,7 +39,7 @@ var (
 	ErrInvalidFilename = newErrorCode("invalid filename", 200230)
 	ErrInvalidVersion  = newErrorCode("invalid version", 200240)
 	WarnCompNotExit    = newErrorCode("comp not exit,please register", 200300)
-
+	WarnCompNotActive  = newErrorCode("comp is approving,please wait", 200310)
 	// db model 错误
 	ErrAlreadyExists = newErrorCode("object already exists", 300100)
 	ErrNotExist      = newErrorCode("object not exist", 300200)

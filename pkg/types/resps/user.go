@@ -12,3 +12,9 @@ type PassUpdateResp struct {
 	Role  string    `json:"role"`
 	Email string    `json:"email"`
 }
+
+type JobDetailsUserResp struct {
+	Name     string `json:"name"`
+	HeadImg  string `json:"headImg"`
+	Position string `json:"position"`
+}

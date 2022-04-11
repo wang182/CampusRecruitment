@@ -5,7 +5,9 @@ import (
 	"CampusRecruitment/pkg/models"
 	"CampusRecruitment/pkg/types"
 	"CampusRecruitment/pkg/types/errors"
+	"CampusRecruitment/pkg/types/resps"
 	"gorm.io/gorm"
+	"strings"
 )
 
 func CreateJob(db *gorm.DB, form *types.CreateJobForm) (*models.Job, error) {
@@ -18,14 +20,31 @@ func CreateJob(db *gorm.DB, form *types.CreateJobForm) (*models.Job, error) {
 		WageSection: SelectWageSection(form.MinWage),
 		JobNum:      form.JobNum,
 		Desc:        form.Desc,
+		City:        form.City,
 		Address:     form.Address,
-		Tags:        form.Tags,
+		Tags:        ChangeArrayToString(form.Tags),
 	}
 	if err := db.Model(&models.Job{}).Create(&job).Error; err != nil {
 		return nil, errors.AutoDbErr(err)
 	}
 	return GetJobById(db, job.Id)
 
+}
+
+func QueryJobs(db *gorm.DB, q string) *gorm.DB {
+	return db.Model(&models.Job{}).Where("job_name LIKE ?", "%"+q+"%").Order("created_at")
+}
+
+func SearchJobsWithCond(db *gorm.DB, cond *types.JobCondForm) *gorm.DB {
+	return db.Table(models.Job{}.TableName()).Where("state", "active").Where(cond)
+}
+
+func GetJobsIdByCompId(db *gorm.DB, id models.Id) ([]models.Id, error) {
+	ids := make([]models.Id, 0)
+	if err := db.Model(&models.Job{}).Where("comp_id", id).Select("id").Scan(&ids).Error; err != nil {
+		return nil, errors.AutoDbErr(err)
+	}
+	return ids, nil
 }
 
 func GetJobById(db *gorm.DB, id models.Id) (*models.Job, error) {
@@ -37,6 +56,30 @@ func GetJobById(db *gorm.DB, id models.Id) (*models.Job, error) {
 		return nil, errors.AutoDbErr(err)
 	}
 	return &job, nil
+}
+
+func DeleteJob(db *gorm.DB, id models.Id) error {
+	job := models.Job{}
+	if err := db.Model(&models.Job{}).Where("id", id).Delete(&job).Error; err != nil {
+		return errors.AutoDbErr(err)
+	}
+	return nil
+}
+
+func CLoseJob(db *gorm.DB, id models.Id) error {
+	ids := make([]models.Id, 0)
+	ids[0] = id
+	if err := UpdateJobsState(db, ids, "inactive"); err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateJobsState(db *gorm.DB, ids []models.Id, state string) error {
+	if err := db.Model(&models.Job{}).Where("id IN ?", ids).Update("state", state).Error; err != nil {
+		return errors.AutoDbErr(err)
+	}
+	return nil
 }
 
 func SelectWageSection(minWage int) string {
@@ -59,4 +102,28 @@ func SelectWageSection(minWage int) string {
 		return consts.WageF
 	}
 	return consts.Wage0
+}
+
+func ChangeArrayToString(arrays []string) string {
+	str := strings.Join(arrays, ",")
+	return str
+}
+
+func ChangeStringToArray(str string) []string {
+	arr := strings.Split(str, ",")
+	return arr
+}
+
+func GetHotJobsByCompId(db *gorm.DB, compId models.Id) ([]resps.HotJobResp, error) {
+	hotJobs := make([]resps.HotJobResp, 0)
+	if err := db.Model(&models.Job{}).Where("comp_id", compId).Order("updated_at").Limit(6).Scan(&hotJobs).Error; err != nil {
+		return nil, errors.AutoDbErr(err)
+	}
+	return hotJobs, nil
+}
+
+func GetJobNumByCompId(db *gorm.DB, compId models.Id) int {
+	var num int
+	db.Model(&models.Job{}).Raw("SELECT COUNT(1) FROM t_job WHERE comp_id = ?", compId).Scan(&num)
+	return num
 }

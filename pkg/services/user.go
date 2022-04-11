@@ -171,3 +171,15 @@ func NormalUserUpdate(db *gorm.DB, form *types.NormalUpdateUserForm) (*models.Us
 
 	return UpdateUser(db, &updateForm)
 }
+
+func GetUserNumByCompId(db *gorm.DB, compId models.Id) (int, error) {
+	comp, err := GetCompById(db, compId)
+	if err != nil {
+		return 0, err
+	}
+	var num int
+	if err = db.Model(&models.User{}).Raw("SELECT COUNT(1) FROM t_user WHERE `from` = ?", comp.CompName).Scan(&num).Error; err != nil {
+		return 0, errors.AutoDbErr(err)
+	}
+	return num, nil
+}

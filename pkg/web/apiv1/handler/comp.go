@@ -61,9 +61,27 @@ func QueryComp(c *gin.Context) {
 	ac.Response(apps.QueryComp(ac, &form))
 }
 
+// AdminQueryComp 查询所有公司（管理员接口）
+// @Tags Comp
+// @Summary 查询所有公司
+// @Accept json
+// @Produce json
+// @Security AuthToken
+// @Param json query types.QueryCompForm true "parameter"
+// @router /admin/comp [GET]
+// @Success 200 {object} types.APIResponse{result=types.APIPageResult{list=[]resps.CompCondResp}}
+func AdminQueryComp(c *gin.Context) {
+	ac := ctx.New(c)
+	form := types.QueryCompForm{}
+	if err := ac.Bind(&form); err != nil {
+		return
+	}
+	ac.Response(apps.AdminQueryComp(ac, &form))
+}
+
 // CloseComp 关闭公司（管理）
 // @Tags Comp
-// @Summary 关闭公司
+// @Summary 关闭公司（管理）
 // @Accept json
 // @Produce json
 // @Security AuthToken
@@ -75,9 +93,9 @@ func CloseComp(c *gin.Context) {
 	ac.Response(apps.CloseComp(ac, models.Id(c.Param("id"))))
 }
 
-// ApproveComp 更新公司状态 （管理）
+// ApproveComp 公司通过审批
 // @Tags Comp
-// @Summary 更新公司状态
+// @Summary 公司通过审批
 // @Accept json
 // @Produce json
 // @Security AuthToken
@@ -97,7 +115,7 @@ func ApproveComp(c *gin.Context) {
 // @Security AuthToken
 // @Param compId path string true "comp id"
 // @Param form body types.UpdateCompForm true "parameter"
-// @router /comp/{compId} [PUT]
+// @router /comp/{id} [PUT]
 // @Success 200 {object} types.APIResponse{}
 func UpdateComp(c *gin.Context) {
 	ac := ctx.New(c)
@@ -106,4 +124,18 @@ func UpdateComp(c *gin.Context) {
 		return
 	}
 	ac.Response(apps.UpdateComp(ac, &form))
+}
+
+// GetCompDetail 公司详情界面
+// @Tags Comp
+// @Summary 公司详情界面
+// @Accept json
+// @Produce json
+// @Security AuthToken
+// @Param id path string true "comp id"
+// @router /comp/{id} [GET]
+// @Success 200 {object} types.APIResponse{result=resps.CompDetailResp}
+func GetCompDetail(c *gin.Context) {
+	ac := ctx.New(c)
+	ac.Response(apps.GetCompDetail(ac, models.Id(c.Param("id"))))
 }
